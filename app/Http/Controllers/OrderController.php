@@ -22,20 +22,21 @@ class OrderController extends Controller
     public function saveOrder(Request $request){
         try {
             $validated = $request->validate([
-                'id' => 'required|unique:orders',
                 'status' => 'required|string',
                 'group_id' => 'required|integer',
                 'amount' => 'required|numeric',
             ]);
 
-            $order = new Order();
 
-            $order->id = $validated['id'];
-            $order->status = $validated['status'];
-            $order->group_id = $validated['group_id'];
-            $order->amount = $validated['amount'];
-
-            $order->save();
+            $order = Order::updateOrCreate(
+                ['id' => $request['id']],
+                [
+                    'id' => $request['id'],
+                    'status' => $validated['status'],
+                    'group_id' => $validated['group_id'],
+                    'amount' => $validated['amount'],
+                ]
+            );
 
             return $order;
         } catch (\Exception $e) {
@@ -69,6 +70,14 @@ class OrderController extends Controller
 
     public function delete(Order $order){
         $order->delete();
-        return response()->json(['message' => 'Order successfully deleted']);
+        return response()->json(['message' => 'Order deleted successfully']);
+    }
+
+    public function store($id){
+        $order = $this->getOrder($id);
+        $request = new Request($order);
+        $order = $this->saveOrder($request);
+
+        return response()->json(['order' => $order]);
     }
 }
