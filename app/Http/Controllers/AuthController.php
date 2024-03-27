@@ -10,9 +10,9 @@ class AuthController extends Controller
     public function getToken(ExternalService $externalService)
     {
         try {
-            return response()->json(['token' =>  $externalService->getAccess()['access_token']], 200);
+            return response()->json(['token' =>  $externalService->getAccess()['access_token']]);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Error getting token'], 500);
+            return response()->json(['message' => $e->getMessage()]);
         }
     }
 }

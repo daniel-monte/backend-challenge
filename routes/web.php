@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +16,8 @@ use App\Http\Controllers\AuthController;
 */
 
 Route::get('/get-token', [AuthController::class, 'getToken']);
+
+Route::get('/get-order/{id}', [OrderController::class, 'getOrder']);
 
 Route::get('/', function () {
     return view('welcome');
