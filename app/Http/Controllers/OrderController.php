@@ -8,17 +8,12 @@ use App\Services\ExternalService;
 
 class OrderController extends Controller
 {
-    public function getOrder(ExternalService $externalService, $id)
+    public function getOrder($id)
     {
+        $externalService = new ExternalService();
         try {
             $order = $externalService->getOrder($id)['order'];
-
-            if('processing' === $order['status']){
-                $request = new Request($order);
-                $this->saveOrder($request);
-            }
-
-            return response()->json($order);
+            return $order;
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()]);
         }
@@ -41,8 +36,34 @@ class OrderController extends Controller
             $order->amount = $validated['amount'];
 
             $order->save();
+
+            return $order;
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()]);
         }
+    }
+
+    public function show($id){
+        $order = Order::find($id);
+
+        if(!$order){
+            $order = $this->getOrder($id);
+
+            if('processing' === $order['status']){
+                $request = new Request($order);
+                $order = $this->saveOrder($request);
+            }
+        }
+
+        return response()->json(['order' => $order]);
+    }
+
+    public function index(){
+       
+        $query = Order::with('orders')
+            ->groupBy('group_id')
+            ->selectRaw('group_id, count(*) as total_orders, sum(case when status = "processing" then amount else 0 end) as total_amount');
+
+        return response()->json(['orders' => $query->get()]);
     }
 }

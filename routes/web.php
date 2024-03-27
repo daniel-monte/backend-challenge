@@ -17,7 +17,8 @@ use App\Http\Controllers\OrderController;
 
 Route::get('/get-token', [AuthController::class, 'getToken']);
 
-Route::get('/get-order/{id}', [OrderController::class, 'getOrder']);
+Route::get('/orders/{id}', [OrderController::class, 'show']);
+Route::get('/orders', [OrderController::class, 'index']);
 
 Route::get('/', function () {
     return view('welcome');
