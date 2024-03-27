@@ -60,10 +60,15 @@ class OrderController extends Controller
 
     public function index(){
        
-        $query = Order::with('orders')
+        $query = Order::with('groupedOrders')
             ->groupBy('group_id')
             ->selectRaw('group_id, count(*) as total_orders, sum(case when status = "processing" then amount else 0 end) as total_amount');
 
         return response()->json(['orders' => $query->get()]);
+    }
+
+    public function delete(Order $order){
+        $order->delete();
+        return response()->json(['message' => 'Order successfully deleted']);
     }
 }

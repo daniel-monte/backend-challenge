@@ -9,7 +9,7 @@ class Order extends Model
 {
     use HasFactory;
 
-    public function orders()
+    public function groupedOrders()
     {
         return $this->hasMany(Order::class, 'group_id', 'group_id');
     }

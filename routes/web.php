@@ -19,6 +19,7 @@ Route::get('/get-token', [AuthController::class, 'getToken']);
 
 Route::get('/orders/{id}', [OrderController::class, 'show']);
 Route::get('/orders', [OrderController::class, 'index']);
+Route::get('/delete/{order}', [OrderController::class, 'delete']);
 
 Route::get('/', function () {
     return view('welcome');
